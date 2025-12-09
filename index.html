@@ -1,223 +1,494 @@
-
 <!DOCTYPE html>
-<html amp lang="en-ID">
+<html lang="id">
 <head>
-   <meta charset="utf-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-   <title></title>
-   <meta name="description" content="" />
-   <meta name="robots" content="index,follow" />
-   <meta property="og:site_name" content="" />
-   <meta property="og:image:alt" content="" />
-   <link href="https://file.ahs.my.id/-oUYQnedHDS" rel="shortcut icon" type="image/x-icon" />
-   <link rel="canonical" href="" />
-   <link rel="preload" as="script" href="https://cdn.ampproject.org/v0.js" />
-   <script async custom-element="amp-bind" src="https://cdn.ampproject.org/v0/amp-bind-0.1.js"></script>
-   <script async src="https://cdn.ampproject.org/v0.js"></script>
-   <style amp-boilerplate>
-      body {
-         -webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
-         -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
-         -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both;
-         animation: -amp-start 8s steps(1, end) 0s 1 normal both
-      }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Neon Space Defender</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
-      @-webkit-keyframes -amp-start {
-         from {
-            visibility: hidden
-         }
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #050505;
+            font-family: 'Orbitron', sans-serif;
+            touch-action: none; /* Mencegah scroll/zoom di HP */
+            cursor: none; /* Sembunyikan kursor saat main */
+        }
 
-         to {
-            visibility: visible
-         }
-      }
+        #ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none; /* Biar klik tembus ke canvas */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
 
-      @-moz-keyframes -amp-start {
-         from {
-            visibility: hidden
-         }
+        #score-board {
+            color: #00ffff;
+            font-size: 24px;
+            text-shadow: 0 0 10px #00ffff;
+        }
 
-         to {
-            visibility: visible
-         }
-      }
+        #start-screen, #game-over-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            pointer-events: auto;
+            cursor: default;
+        }
 
-      @-ms-keyframes -amp-start {
-         from {
-            visibility: hidden
-         }
+        h1 {
+            color: #ff00ff;
+            font-size: 40px;
+            text-shadow: 0 0 20px #ff00ff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
 
-         to {
-            visibility: visible
-         }
-      }
+        p {
+            color: #fff;
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-      @-o-keyframes -amp-start {
-         from {
-            visibility: hidden
-         }
+        .btn {
+            background: transparent;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 15px 40px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #00ff00;
+            transition: all 0.2s;
+            text-transform: uppercase;
+        }
 
-         to {
-            visibility: visible
-         }
-      }
+        .btn:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 30px #00ff00;
+        }
 
-      @keyframes -amp-start {
-         from {
-            visibility: hidden
-         }
-
-         to {
-            visibility: visible
-         }
-      }
-   </style>
-   <noscript>
-      <style amp-boilerplate>
-         body {
-            -webkit-animation: none;
-            -moz-animation: none;
-            -ms-animation: none;
-            animation: none
-         }
-      </style>
-   </noscript>
-
-   <style amp-custom>
-      * {
-         box-sizing: border-box;
-      }
-
-      body {
-         font-family: monospace;
-         position: relative;
-         background-color: rgb(0, 0, 0);
-         background-image: radial-gradient(#3f002c 5%, transparent 50%);
-         background-size: 5px 5px;
-         background-attachment: fixed;
-      }
-
-      .container {
-         max-width: 400px;
-         height: 100vh;
-         margin: 0 auto;
-         padding: 15px;
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         overflow: hidden;
-      }
-
-      .welcome {
-         max-width: 350px;
-         margin: 0 auto;
-      }
-
-      .welcome h2 {
-         font-size: 15px;
-         color: #fff;
-         overflow: hidden;
-         border-right: .15em solid #ffb9f9ff;
-         /* The typwriter cursor */
-         white-space: nowrap;
-         letter-spacing: .09em;
-         animation: typing 3.5s steps(40, end), blink-caret .75s step-end infinite;
-      }
-
-      @keyframes typing {
-         from {
-            width: 0
-         }
-
-         to {
-            width: 100%
-         }
-      }
-
-      @keyframes blink-caret {
-
-         from,
-         to {
-            border-color: transparent
-         }
-
-         50% {
-            border-color: #fbf4a0;
-         }
-      }
-
-      .banner {
-         border-radius: 10px;
-      }
-
-      .btn-login {
-         padding: 10px;
-         color: #ffffff;
-         font-size: 20px;
-         font-weight: bold;
-         text-decoration: none;
-         text-align: center;
-         background: linear-gradient(to bottom, #bd008eff 0%, #ffb0ebff 100%);
-         margin-top: 10px;
-         border-radius: 10px;
-         position: relative;
-         z-index: 2;
-      }
-
-      .btn-daftar {
-         padding: 10px;
-         color: #fff;
-         font-size: 20px;
-         font-weight: bold;
-         text-decoration: none;
-         text-align: center;
-         background: linear-gradient(to bottom, #bd008eff 0%, #ffb0ebff 100%);
-         margin-top: 10px;
-         border-radius: 10px;
-         position: relative;
-         z-index: 2;
-      }
-
-      .copyright {
-         text-align: center;
-         color: #ffffff96;
-      }
-
-      .nagaterbang {
-         position: fixed;
-         z-index: 1;
-         left: 0;
-         right: 0;
-         top: 0;
-         bottom: 0;
-         margin: auto;
-      }
-   </style>
+        .hidden { display: none !important; }
+    </style>
 </head>
-
 <body>
-   <div class="container">
-      <header> <center>
-<a href=""><amp-img id="image"
-                  class="animated tada infinite slower" src="https://cdn.sportjaya.me/img/logo.png"
-                  alt="Amp " width="200" height="50" layout="intrinsic"></amp-img></a></center>
-      </header>
-      <div class="welcome">
-         <h2></h2>
-      </div>
 
-      <amp-img
-         src=""
-         width="500" height="500" layout="intrinsic" class="banner"></amp-img>
+    <div id="ui-layer">
+        <div id="score-board">SCORE: 0</div>
+    </div>
 
-      <a href="" target="_blank" rel="noreferrer noopener"
-         role="button" class="btn-login">LOGIN</a>
-      <a href="" target="_blank" rel="noreferrer noopener"
-         role="button" class="btn-daftar">DAFTAR</a>
+    <!-- Start Screen -->
+    <div id="start-screen">
+        <h1>NEON DEFENDER</h1>
+        <p>Geser Mouse/Jari untuk Bergerak.<br>Tembakan Otomatis.</p>
+        <button class="btn" onclick="startGame()">START MISSION</button>
+    </div>
 
-      <p class="copyright">© 2025 • <a style="color: #ffffff;" href=""></a> • All Rights Reserved.</p>
-   </div>
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="hidden">
+        <h1 style="color: #ff3333; text-shadow: 0 0 20px #ff3333;">MISSION FAILED</h1>
+        <p id="final-score">Final Score: 0</p>
+        <button class="btn" onclick="startGame()">RETRY</button>
+    </div>
 
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreEl = document.getElementById('score-board');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const finalScoreEl = document.getElementById('final-score');
+
+        // Setup Canvas Fullscreen
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let gameActive = false;
+        let score = 0;
+        let frame = 0;
+        
+        // --- AUDIO SYNTH (SFX) ---
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const audio = new AudioCtx();
+
+        function playSound(type) {
+            if (audio.state === 'suspended') audio.resume();
+            const osc = audio.createOscillator();
+            const gain = audio.createGain();
+            osc.connect(gain);
+            gain.connect(audio.destination);
+
+            const now = audio.currentTime;
+
+            if (type === 'shoot') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(); osc.stop(now + 0.1);
+            } else if (type === 'explosion') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.exponentialRampToValueAtTime(10, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.3);
+                osc.start(); osc.stop(now + 0.3);
+            } else if (type === 'start') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.linearRampToValueAtTime(800, now + 0.5);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                osc.start(); osc.stop(now + 0.5);
+            }
+        }
+
+        // --- CLASSES ---
+
+        class Player {
+            constructor() {
+                this.x = canvas.width / 2;
+                this.y = canvas.height - 100;
+                this.radius = 15;
+                this.color = '#00ffff';
+                this.velocity = { x: 0, y: 0 };
+            }
+
+            draw() {
+                ctx.save();
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                // Gambar Segitiga Pesawat
+                ctx.moveTo(this.x, this.y - 20);
+                ctx.lineTo(this.x - 15, this.y + 15);
+                ctx.lineTo(this.x, this.y + 5); // Ekor masuk dikit
+                ctx.lineTo(this.x + 15, this.y + 15);
+                ctx.closePath();
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update(mouseX, mouseY) {
+                // Smooth Movement (Lerp)
+                // Jika mouse/touch aktif, kejar posisi itu
+                if (mouseX && mouseY) {
+                    // Batas layar
+                    const targetX = Math.max(this.radius, Math.min(canvas.width - this.radius, mouseX));
+                    const targetY = Math.max(this.radius, Math.min(canvas.height - this.radius, mouseY));
+                    
+                    this.x += (targetX - this.x) * 0.15; // 0.15 = kecepatan respon (makin besar makin cepet)
+                    this.y += (targetY - this.y) * 0.15;
+                }
+                this.draw();
+            }
+        }
+
+        class Projectile {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.radius = 3;
+                this.color = '#ffff00';
+                this.velocity = { x: 0, y: -15 }; // Kecepatan peluru
+            }
+
+            draw() {
+                ctx.save();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.y += this.velocity.y;
+                this.draw();
+            }
+        }
+
+        class Enemy {
+            constructor() {
+                this.radius = Math.random() * 20 + 10; // Ukuran random
+                this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+                this.y = -this.radius; // Mulai dari atas layar
+                
+                const colorType = Math.random();
+                if (colorType > 0.5) this.color = '#ff00ff'; // Magenta
+                else this.color = '#ff3333'; // Merah
+
+                // Kecepatan random + sedikit tracking player
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 1,
+                    y: Math.random() * 2 + 2 // Speed vertical
+                };
+            }
+
+            draw() {
+                ctx.save();
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                // Gambar Hexagon atau Bulat
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // Inti musuh
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius * 0.4, 0, Math.PI * 2, false);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.draw();
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.radius = Math.random() * 3;
+                this.color = color;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 8, // Ledakan menyebar
+                    y: (Math.random() - 0.5) * 8
+                };
+                this.alpha = 1; // Transparansi
+                this.friction = 0.95; // Perlambatan
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.restore();
+            }
+
+            update() {
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.02; // Memudar
+                this.draw();
+            }
+        }
+
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 1.5;
+                this.speed = Math.random() * 5 + 1; // Efek parallax (kecepatan beda2)
+            }
+            
+            draw() {
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.1})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            update() {
+                this.y += this.speed;
+                if (this.y > canvas.height) {
+                    this.y = 0;
+                    this.x = Math.random() * canvas.width;
+                }
+                this.draw();
+            }
+        }
+
+        // --- GAME VARIABLES ---
+        let player = new Player();
+        let projectiles = [];
+        let enemies = [];
+        let particles = [];
+        let stars = [];
+        let mousePos = { x: canvas.width/2, y: canvas.height - 100 };
+
+        // Input Handling
+        window.addEventListener('mousemove', (e) => {
+            mousePos.x = e.clientX;
+            mousePos.y = e.clientY;
+        });
+
+        window.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            mousePos.x = e.touches[0].clientX;
+            mousePos.y = e.touches[0].clientY;
+        }, { passive: false });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            stars = []; // Re-init stars
+            initBackground();
+        });
+
+        function initBackground() {
+            for(let i=0; i<50; i++) {
+                stars.push(new Star());
+            }
+        }
+
+        function startGame() {
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            gameActive = true;
+            score = 0;
+            frame = 0;
+            scoreEl.innerHTML = "SCORE: 0";
+            
+            // Reset Objects
+            player = new Player();
+            projectiles = [];
+            enemies = [];
+            particles = [];
+            stars = [];
+            initBackground();
+            
+            playSound('start');
+            animate();
+        }
+
+        function spawnEnemies() {
+            // Spawn musuh setiap 1 detik (kurang lebih 60 frame)
+            if (frame % 50 === 0) {
+                enemies.push(new Enemy());
+            }
+        }
+
+        function animate() {
+            if (!gameActive) return;
+            
+            requestAnimationFrame(animate);
+            // Efek Trail (Background tidak dihapus total, tapi ditimpa warna hitam transparan)
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.3)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            frame++;
+
+            // Background Stars
+            stars.forEach(star => star.update());
+
+            // Player Logic
+            player.update(mousePos.x, mousePos.y);
+
+            // Auto Shoot (setiap 10 frame)
+            if (frame % 10 === 0) {
+                projectiles.push(new Projectile(player.x, player.y - 20));
+                // Optional: Sound playSound('shoot') - dimatiin biar ga berisik bgt
+                // playSound('shoot'); 
+            }
+
+            // Projectiles Logic
+            projectiles.forEach((projectile, index) => {
+                projectile.update();
+                // Hapus jika keluar layar
+                if (projectile.y < 0) projectiles.splice(index, 1);
+            });
+
+            // Particles Logic
+            particles.forEach((particle, index) => {
+                if (particle.alpha <= 0) {
+                    particles.splice(index, 1);
+                } else {
+                    particle.update();
+                }
+            });
+
+            // Enemies Logic
+            enemies.forEach((enemy, index) => {
+                enemy.update();
+
+                // Cek tabrakan dengan Player
+                const distPlayer = Math.hypot(player.x - enemy.x, player.y - enemy.y);
+                if (distPlayer - enemy.radius - player.radius < 1) {
+                    gameOver();
+                }
+
+                // Cek tabrakan dengan Peluru
+                projectiles.forEach((projectile, pIndex) => {
+                    const dist = Math.hypot(projectile.x - enemy.x, projectile.y - enemy.y);
+                    
+                    if (dist - enemy.radius - projectile.radius < 1) {
+                        // KENA!
+                        playSound('explosion');
+                        
+                        // Bikin Partikel Ledakan
+                        for (let i = 0; i < 15; i++) { // 15 pecahan
+                            particles.push(new Particle(enemy.x, enemy.y, enemy.color));
+                        }
+
+                        // Hapus musuh dan peluru
+                        setTimeout(() => {
+                            enemies.splice(index, 1);
+                            projectiles.splice(pIndex, 1);
+                        }, 0);
+
+                        score += 100;
+                        scoreEl.innerHTML = "SCORE: " + score;
+                    }
+                });
+
+                // Hapus musuh jika lewat bawah layar
+                if (enemy.y > canvas.height + 100) {
+                    enemies.splice(index, 1);
+                }
+            });
+
+            spawnEnemies();
+        }
+
+        function gameOver() {
+            gameActive = false;
+            playSound('explosion');
+            finalScoreEl.innerText = "FINAL SCORE: " + score;
+            gameOverScreen.classList.remove('hidden');
+            document.body.style.cursor = 'default';
+        }
+
+        // Init pertama kali (bikin bintang doang)
+        initBackground();
+        animate(); // Loop sekali buat render background
+
+    </script>
 </body>
-
 </html>
